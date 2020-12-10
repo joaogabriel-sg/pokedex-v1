@@ -1,6 +1,6 @@
 class PokemonList {
   constructor(pokemonsList, quantity = 150) {
-    this.quantity = quantity <= 420 && quantity !== 0 ? quantity : 150;
+    this.quantity = quantity <= 411 && quantity !== 0 ? quantity : 150;
     this.pokemonsList = document.querySelector(pokemonsList);
     this.insertPokemonsInTheList = this.insertPokemonsInTheList.bind(this);
   }
@@ -46,29 +46,37 @@ class PokemonList {
 }
 
 class Pagination {
-  constructor({ 
+  constructor({
+    selectForQuantity, 
     dataQuantity, 
     perPage, 
     buttons: { first, prev, next, last },
     numbersContainer,
     list
   }) {
-    let itemsPerPage = perPage > 0 && perPage <= 30 ? perPage : 10;
+    this.dataQuantity = dataQuantity;
+    const itemsPerPage = perPage > 0 && perPage <= 30 ? perPage : 10;
     this.states = {
       page: 1,
       perPage: itemsPerPage,
-      totalPages: Math.ceil(dataQuantity / itemsPerPage),
+      totalPages: Math.ceil(this.dataQuantity / itemsPerPage),
       maxVisibleButtons: 5,
     };
+    
     this.buttonsInterface = {
       first: document.querySelector(first),
       prev: document.querySelector(prev),
       next: document.querySelector(next),
       last: document.querySelector(last),
     };
-    this.list = document.querySelector(list);
+    
     this.numbersContainer = document.querySelector(numbersContainer);
+
+    this.list = document.querySelector(list);
     this.whenPopulateList = this.whenPopulateList.bind(this);
+
+    this.selectForQuantity = document.querySelector(selectForQuantity);
+    this.modifyActualQuantity = this.modifyActualQuantity.bind(this);
   }
 
   forButtons() {
@@ -171,9 +179,21 @@ class Pagination {
     this.observer.observe(this.list, { childList: true });
   }
 
+  modifyActualQuantity(e) {
+    this.states.page = 1;
+    this.states.perPage = e.target.value;
+    this.states.totalPages = Math.ceil(this.dataQuantity / this.states.perPage);
+    this.update();
+  }
+
+  verifyQuantityChange() {
+    this.selectForQuantity.addEventListener('input', this.modifyActualQuantity)
+  }
+
   init() {
     if (this.states && this.buttonsInterface && this.list && this.numbersContainer) {
       this.observeWhenListIsPopulated();
+      this.verifyQuantityChange();
       this.forControls();
       this.forButtons();
     }
@@ -184,6 +204,7 @@ class Pagination {
 const pokemonList = new PokemonList('.pokemons-list', 150);
 
 const pokemonPagination = new Pagination({
+  selectForQuantity: 'select#quantity',
   dataQuantity: pokemonList.quantity,
   perPage: 10,
   buttons: {
