@@ -1,5 +1,9 @@
 <div align="center">
-  <h1>Pokédex v1</h1>
+  <h1>
+  <img src="./img/pokeball.svg" width="20px">
+  Pokédex v1
+  <img src="./img/pokeball.svg" width="20px">
+</h1>
 </div>
 
 A simple **Pokédex** capable of showing the Pokémon Master the existing species, provided with pages and selection of how many pokémons you want to see per page.  
